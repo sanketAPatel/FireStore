@@ -23,8 +23,15 @@ public class MainActivity extends AppCompatActivity {
     private  EditText mTitleEt,mDescriptionEt;
     private Button mSaveBtn,mviewBtn;
 
+    //upadate data
+    private String uTitle,uId,uDesc;
+
     //firesotre object creating
     private FirebaseFirestore db;
+
+
+
+
 
 
 
@@ -39,6 +46,22 @@ public class MainActivity extends AppCompatActivity {
         mviewBtn=findViewById(R.id.showall_btn);
 
         db=FirebaseFirestore.getInstance();
+        // Bundle bundle=getIntent().getExtras();
+        Bundle bundle=getIntent().getExtras();
+        if(bundle!=null)
+        {
+            mSaveBtn.setText("Update");
+            uTitle=bundle.getString("uTitle");
+            uId=bundle.getString("uId");
+            uDesc=bundle.getString("uDesc");
+            mTitleEt.setText("uTitle");
+            mDescriptionEt.setText("uDesc");
+        }
+        else
+            {
+             mSaveBtn.setText("Save");
+        }
+        //updateended for Bundle check Savebtn
 
         mviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,15 +75,50 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String title=mTitleEt.getText().toString().trim();
                 String description=mDescriptionEt.getText().toString();
-                String id= UUID.randomUUID().toString();
+              //added later for update
 
-                SavetoFireStore(id,title,description);
+                Bundle bundle1=getIntent().getExtras();
+                if (bundle1!=null)
+                {
+                    String id =uId;
+                    updateFireStore(id,title,description);
+
+                }
+                else{
+                    String id= UUID.randomUUID().toString();   //moved from outside to here both line for update cpndition
+                    SavetoFireStore(id,title,description);
+                }
+                //added for update end here now check updateToFirestore metohd.
             }
+
         });
 
 
 
     }
+
+    //added for update
+    private void updateFireStore(String id, String title, String description) {
+    db.collection("Documents").document(id).update("title",title,"desc",description)
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Toast.makeText(MainActivity.this,"Record Update",Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this,"Failed Record",Toast.LENGTH_SHORT).show();
+                }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+        @Override
+        public void onFailure(@NonNull Exception e) {
+        Toast.makeText(MainActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
+        }
+    });
+    }
+    //end of added for update
 
     private void SavetoFireStore(String id, String title, String description) {
 

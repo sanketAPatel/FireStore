@@ -1,5 +1,7 @@
 package com.example.firestore;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyviewHolder> {
         this.mList = mList;
     }
 
-
+//for update
+    public void updateData(int position){
+        Model item=mList.get(position);
+        Bundle bundle=new Bundle();
+        bundle.putString("uId",item.getId());
+        bundle.putString("uTitle",item.getTitle());
+        bundle.putString("uDesc",item.getDesc());
+        Intent intent=new Intent(activity,MainActivity.class);
+        activity.startActivity(intent);
+        //pass data to main activity
+    }
+    //
     @NonNull
     @Override
     public MyviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

@@ -2,6 +2,7 @@ package com.example.firestore;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,9 +44,12 @@ public class ShowActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
+        ItemTouchHelper touchHelper=new ItemTouchHelper(new TouchHelper(adapter));
+        touchHelper.attachToRecyclerView(recyclerView);
         showData();
 
     }
+
 
     private void showData() {
         db.collection("Documents").get()
