@@ -3,6 +3,7 @@ package com.example.firestore;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     //firesotre object creating
     private FirebaseFirestore db;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
         mviewBtn=findViewById(R.id.showall_btn);
 
         db=FirebaseFirestore.getInstance();
+
+        mviewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this,ShowActivity.class));
+            }
+        });
 
         mSaveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
