@@ -51,7 +51,7 @@ public class ShowActivity extends AppCompatActivity {
     }
 
 
-    private void showData() {
+    public void showData() {
         db.collection("Documents").get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

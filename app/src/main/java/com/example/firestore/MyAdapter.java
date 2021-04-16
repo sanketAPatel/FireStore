@@ -6,15 +6,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyviewHolder> {
     private  ShowActivity activity;
     private List<Model> mList;
+    private FirebaseFirestore db= FirebaseFirestore.getInstance();
 
     public MyAdapter(ShowActivity activity, List<Model> mList) {
         this.activity = activity;
@@ -31,6 +37,31 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyviewHolder> {
         Intent intent=new Intent(activity,MainActivity.class);
         activity.startActivity(intent);
         //pass data to main activity
+    }
+    //
+    //for Delete
+    public  void  DeleteData(int position){
+        Model item=mList.get(position);
+        db.collection("Documents").document(item.getId()).delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            notifyremoved(position);
+                            Toast.makeText(activity,"data delete success..",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(activity,"data delete failed.."+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+    }
+    private  void notifyremoved(int position)
+    {
+        mList.remove(position);
+        notifyItemMoved(position,getItemCount());
+        activity.showData();
     }
     //
     @NonNull
